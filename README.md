@@ -101,7 +101,7 @@ expect(fl[0].id).toEqual(id)
 
 ## Why use it
 
-Sequelize is really easy to use, just lack dynamodb support, while for AWS Lambda user, Dynamodb ease the pain of VPS settings, more ideal for lightweight services.
+Sequelize is really easy to use, just lack dynamodb support, while for AWS Lambda user, Dynamodb ease the pain of VPS settings, more ideal for lightweight services. With this module you may migrate to Dynamodb easily.
 
 ## Build/test
 
