@@ -1,0 +1,59 @@
+{
+  "name": "dynamo-sequelize",
+  "version": "0.0.1",
+  "description": "A sequelize wrapper to support Sequelize 5 and Dynamodb",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jest",
+    "lint": "./node_modules/.bin/standard",
+    "clean": "node build/clean.js",
+    "release": "./build/release",
+    "build": "npm run clean && npm run compile",
+    "prepublishOnly": "npm run build",
+    "compile": "node_modules/.bin/babel src --out-dir dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zxdong262/dynamo-sequelize.git"
+  },
+  "keywords": [
+    "Sequelize",
+    "Dynamodb"
+  ],
+  "author": "ZHAO Xudong <zxdong@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zxdong262/dynamo-sequelize/issues"
+  },
+  "homepage": "https://github.com/zxdong262/dynamo-sequelize#readme",
+  "dependencies": {
+    "dynamoose": "^1.10.0",
+    "lodash.get": "^4.4.2",
+    "sequelize": "^5.10.1",
+    "@babel/runtime": "^7.4.4",
+    "shortid": "^2.2.14"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/register": "^7.0.0",
+    "dotenv": "^8.0.0",
+    "dynamodb-local": "0.0.29",
+    "jest": "^24.8.0",
+    "sqlite3": "^4.0.9",
+    "standard": "^13.0.2"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "*-compiled.js",
+      "/dist/"
+    ]
+  },
+  "jest": {
+    "roots": [
+      "tests"
+    ]
+  }
+}
