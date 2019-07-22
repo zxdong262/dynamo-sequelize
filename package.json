@@ -41,6 +41,7 @@
     "dotenv": "^8.0.0",
     "dynamodb-local": "0.0.29",
     "jest": "^24.8.0",
+    "shelljs": "^0.8.3",
     "sqlite3": "^4.0.9",
     "standard": "^13.0.2"
   },
