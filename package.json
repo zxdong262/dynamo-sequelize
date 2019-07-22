@@ -1,8 +1,8 @@
 {
   "name": "dynamo-sequelize",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A sequelize wrapper to support Sequelize 5 and Dynamodb",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "./node_modules/.bin/jest",
     "lint": "./node_modules/.bin/standard",

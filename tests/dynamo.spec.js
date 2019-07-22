@@ -79,10 +79,17 @@ describe(pack.name, function () {
     expect(inst instanceof Dynamo).toEqual(true)
     let before = await inst.findAll()
     // create
-    let a1 = await inst.create({})
+    let a1 = await inst.create({
+      data: {
+        a: 0,
+        b: []
+      }
+    })
     expect(a1.enabled).toEqual(true)
     expect(a1.signed).toEqual(true)
     expect(a1.privateChatOnly).toEqual(true)
+    expect(a1.data.a).toEqual(0)
+    expect(a1.data.b.length).toEqual(0)
     let { id } = a1
     let after = await inst.findAll()
     // findAll
