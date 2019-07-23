@@ -98,6 +98,7 @@ expect(fl[0].id).toEqual(id)
 - Only support Model methods: `find`, `findAll`, `create`, `findByPk`, `update`.
 - `find` and `findAll` only support `where` query or empty query in which case will output all results.
 - `update` only support `where` query.
+- Set envs through .env file, check [.env.sample](.env.sample) for detail.
 
 ## Why use it
 

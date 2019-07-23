@@ -3,6 +3,15 @@ import dynamoose, { Schema } from 'dynamoose'
 import Sequelize from 'sequelize'
 import get from 'lodash.get'
 
+const config = {}
+if (process.env.DYNAMODB_TABLE_PREFIX) {
+  config.prefix = process.env.DYNAMODB_TABLE_PREFIX
+  dynamoose.setDefaults(config)
+}
+if (process.env.DYNAMODB_LOCALHOST) {
+  dynamoose.local(process.env.DYNAMODB_LOCALHOST)
+}
+
 function typeMapper(type) {
   switch (type) {
     case Sequelize.STRING:

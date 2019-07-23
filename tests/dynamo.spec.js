@@ -12,16 +12,6 @@ require('dotenv').config()
 const dynamoLocalPort = 8000
 let handle
 
-const {
-  RINGCENTRAL_ENGAGE_VERIFY_TOKEN
-} = process.env
-
-function wait (time) {
-  return new Promise(resolve => {
-    setTimeout(resolve, time)
-  })
-}
-
 jest.setTimeout(99999)
 
 beforeEach(async () => {
