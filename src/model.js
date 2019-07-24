@@ -89,6 +89,19 @@ export default function (Model, options) {
         })
       })
     }
+
+    toJSON () {
+      return Object.keys(this).filter(k => {
+        return typeof this[k] !== 'function' &&
+          'value' in Object.getOwnPropertyDescriptor(this, k) &&
+          k !== `$__`
+      }).reduce((prev, k) => {
+        return {
+          ...prev,
+          [k]: this[k]
+        }
+      }, {})
+    }
   }
   // DynamoModel.options = options
   DynamoModel.Model = Model

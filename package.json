@@ -27,9 +27,9 @@
   },
   "homepage": "https://github.com/zxdong262/dynamo-sequelize#readme",
   "dependencies": {
+    "@babel/runtime": "^7.4.4",
     "dynamoose": "^1.10.0",
     "lodash.get": "^4.4.2",
-    "@babel/runtime": "^7.4.4",
     "shortid": "^2.2.14"
   },
   "devDependencies": {
