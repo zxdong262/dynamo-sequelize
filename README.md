@@ -22,7 +22,7 @@ const sequelize = new SequelizeDynamo(
     dialect: 'dynamo'
   }
 )
-let inst = sequelize.define('Dog', {
+let inst = sequelize.define('Ass', {
   id: { // Glip user ID
     type: Sequelize.STRING,
     primaryKey: true
@@ -52,16 +52,22 @@ let inst = sequelize.define('Dog', {
     type: Sequelize.JSON
   }
 })
-expect(inst instanceof Dynamo).toEqual(true)
-let before = await inst.findAll()
 
+let before = await inst.findAll()
 // create
-let a1 = await inst.create({})
+let a1 = await inst.create({
+  data: {
+    a: 0,
+    b: []
+  }
+})
 expect(a1.enabled).toEqual(true)
 expect(a1.signed).toEqual(true)
+expect(a1.privateChatOnly).toEqual(true)
+expect(a1.data.a).toEqual(0)
+expect(a1.data.b.length).toEqual(0)
 let { id } = a1
 let after = await inst.findAll()
-
 // findAll
 expect(after.length).toEqual(before.length + 1)
 
@@ -82,22 +88,33 @@ let a2 = await inst.findByPk(id)
 expect(a2.enabled).toEqual(false)
 
 // find
-await inst.create({})
+await inst.create({
+  id: 'xxx'
+})
 let fl = await inst.find({
   where: {
-    enabled: false
+    id: 'xxx',
+    enabled: true
   }
 })
 expect(fl.length).toEqual(1)
-expect(fl[0].id).toEqual(id)
+expect(fl[0].id).toEqual('xxx')
+
+// findOne
+let oo = await inst.findOne({
+  where: {
+    id
+  }
+})
+expect(oo.id).toEqual(id)
 ```
 
 ## Supported features
 
 - Enable dynamodb only when `dialect === 'dynamo'`
 - Only support Model deinfe by `inst.define`
-- Only support Model methods: `find`, `findAll`, `create`, `findByPk`, `update`.
-- `find` and `findAll` only support `where` query or empty query in which case will output all results.
+- Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`.
+- `find`, `findOne` and `findAll` only support `where` query.
 - `update` only support `where` query.
 - Set envs through .env file, check [.env.sample](.env.sample) for detail.
 

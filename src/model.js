@@ -7,6 +7,7 @@ export default function (Model, options) {
       this.Model = DynamoModel.Model
       this.options = DynamoModel.options
     }
+
     static sync () {
       return
     }
@@ -18,13 +19,13 @@ export default function (Model, options) {
       if (!inst.id) {
         inst.id = generate()
       }
-      let ist = new this.Model(inst)
+      let ist = new DynamoModel.Model(inst)
       return ist.save()
     }
   
     static findAll (query) {
       if (!query) {
-        return this.Model.scan().exec()
+        return DynamoModel.Model.scan().exec()
       }
       if (
         !query ||
@@ -41,7 +42,7 @@ export default function (Model, options) {
           return prev
         }, {})
       return new Promise((resolve, reject) => {
-        this.Model.scan(q, (err, result) => {
+        DynamoModel.Model.scan(q, (err, result) => {
           if (err) {
             reject(err)
           } else {
@@ -51,13 +52,25 @@ export default function (Model, options) {
       })
     }
   
-    static (...args) {
-      return this.findAll(...args)
+    static find (...args) {
+      return DynamoModel.findAll(...args)
     }
-  
+
+    static findOne (query) {
+      return new Promise((resolve, reject) => {
+        DynamoModel.Model.get(query.where, (err, result) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(result)
+          }
+        })
+      })
+    }
+
     static findByPk (id) {
       return new Promise((resolve, reject) => {
-        this.Model.get({ id }, (err, result) => {
+        DynamoModel.Model.get({ id }, (err, result) => {
           if (err) {
             reject(err)
           } else {
@@ -69,7 +82,7 @@ export default function (Model, options) {
   
     static update(update, query) {
       return new Promise((resolve, reject) => {
-        this.Model.update(query.where, update, (err, result) => {
+        DynamoModel.Model.update(query.where, update, (err, result) => {
           if (err) {
             reject(err)
           } else {

@@ -66,7 +66,7 @@ describe(pack.name, function () {
         type: Sequelize.JSON
       }
     })
-    expect(inst instanceof Dynamo).toEqual(true)
+
     let before = await inst.findAll()
     // create
     let a1 = await inst.create({
@@ -102,13 +102,24 @@ describe(pack.name, function () {
     expect(a2.enabled).toEqual(false)
 
     // find
-    await inst.create({})
+    await inst.create({
+      id: 'xxx'
+    })
     let fl = await inst.find({
       where: {
-        enabled: false
+        id: 'xxx',
+        enabled: true
       }
     })
     expect(fl.length).toEqual(1)
-    expect(fl[0].id).toEqual(id)
+    expect(fl[0].id).toEqual('xxx')
+
+    // findOne
+    let oo = await inst.findOne({
+      where: {
+        id
+      }
+    })
+    expect(oo.id).toEqual(id)
   })
 })
