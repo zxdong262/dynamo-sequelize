@@ -8,6 +8,10 @@ export default class DynamoModel {
     this.useTimeStamp = options.define && options.define.timestamp
   }
 
+  sync () {
+    return
+  }
+
   create(inst) {
     if (!inst) {
       throw new Error('create requires instance object')
