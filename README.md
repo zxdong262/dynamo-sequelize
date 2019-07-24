@@ -2,11 +2,12 @@
 
 [![Build Status](https://travis-ci.org/zxdong262/dynamo-sequelize.svg?branch=release)](https://travis-ci.org/zxdong262/dynamo-sequelize)
 
-A sequelize wrapper to support Sequelize 5 and Dynamodb.
+A sequelize wrapper to support Sequelize and Dynamodb.
 
 ## Use
 
 ```js
+import Sequelize from 'sequelize'
 import SequelizeDynamo from 'dynamo-sequelize'
 
 // Only when dialect === 'dynamo', will use dynamodb,
