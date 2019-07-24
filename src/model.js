@@ -42,7 +42,7 @@ export default function (Model, options) {
           if (err) {
             reject(err)
           } else {
-            resolve(result)
+            resolve(result.map(r => new this(r)))
           }
         })
       })
