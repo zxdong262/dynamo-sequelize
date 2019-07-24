@@ -75,6 +75,7 @@ describe(pack.name, function () {
         b: []
       }
     })
+    console.log(a1)
     expect(a1.enabled).toEqual(true)
     expect(a1.signed).toEqual(true)
     expect(a1.privateChatOnly).toEqual(true)

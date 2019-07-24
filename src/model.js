@@ -3,10 +3,6 @@ import { generate } from 'shortid'
 
 export default function (Model, options) {
   class DynamoModel {
-    constructor() {
-      this.Model = DynamoModel.Model
-      this.options = DynamoModel.options
-    }
 
     static sync () {
       return
@@ -20,7 +16,12 @@ export default function (Model, options) {
         inst.id = generate()
       }
       let ist = new DynamoModel.Model(inst)
-      return ist.save()
+      return ist.save().then(res => {
+        return {
+          ...res,
+          ...this
+        }
+      })
     }
   
     static findAll (query) {
