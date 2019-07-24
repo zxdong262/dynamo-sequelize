@@ -77,7 +77,7 @@ describe(pack.name, function () {
         b: []
       }
     })
-    console.log(a1)
+    // console.log(a1)
     expect(a1.ac()).toEqual('ac')
     expect(a1.enabled).toEqual(true)
     expect(a1.signed).toEqual(true)
@@ -117,6 +117,9 @@ describe(pack.name, function () {
     })
     expect(fl.length).toEqual(1)
     expect(fl[0].id).toEqual('xxx')
+    expect(fl[0].ac()).toEqual('ac')
+    let fl1 = await inst.findAll()
+    expect(fl[0].ac()).toEqual('ac')
 
     // findOne
     let oo = await inst.findOne({

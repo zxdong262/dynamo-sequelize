@@ -21,7 +21,9 @@ export default function (Model, options) {
   
     static findAll (query) {
       if (!query) {
-        return DynamoModel.Model.scan().exec()
+        return DynamoModel
+          .Model.scan().exec()
+          .then(result => result.map(r => new this(r)))
       }
       if (
         !query ||
