@@ -58,7 +58,7 @@ export default function (Model, options) {
           if (err) {
             reject(err)
           } else {
-            resolve(result)
+            resolve(new this(result))
           }
         })
       })
@@ -70,7 +70,7 @@ export default function (Model, options) {
           if (err) {
             reject(err)
           } else {
-            resolve(result)
+            resolve(new this(result))
           }
         })
       })
