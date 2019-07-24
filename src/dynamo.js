@@ -15,13 +15,20 @@ if (process.env.DYNAMODB_LOCALHOST) {
 function typeMapper(type) {
   switch (type) {
     case Sequelize.STRING:
+    case Sequelize.TEXT:
       return String
     case Sequelize.JSON:
       return Object
     case Sequelize.BOOLEAN:
       return Boolean
     case Sequelize.INTEGER:
+    case Sequelize.BIGINT:
+    case Sequelize.FLOAT:
+    case Sequelize.DECIMAL:
+    case Sequelize.DOUBLE:
       return Number
+    case Sequelize.DATE:
+      return Date
     default:
       throw new Error(`do not support type: ${type}`)
   }
@@ -31,8 +38,17 @@ export function seqSchemaToDynamoSchema(seqSchema) {
   let keys = Object.keys(seqSchema)
   return keys.reduce((prev, k) => {
     let v = seqSchema[k]
+    let type = typeMapper(v.type)
     let def = {
-      type: typeMapper(v.type)
+      type
+    }
+    if (type === Date) {
+      def.get = function(v) {
+        return new Date(v)
+      }
+      def.set = function(v) {
+        return new Date(v).getTime()
+      }
     }
     if (v.defaultValue) {
       def.default = v.defaultValue

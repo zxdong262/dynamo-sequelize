@@ -117,6 +117,31 @@ expect(oo.id).toEqual(id)
 - `find`, `findOne` and `findAll` only support `where` query.
 - `update` only support `where` query.
 - Set envs through .env file, check [.env.sample](.env.sample) for detail.
+- Supported data types:
+
+```js
+function typeMapper(type) {
+  switch (type) {
+    case Sequelize.STRING:
+    case Sequelize.TEXT:
+      return String
+    case Sequelize.JSON:
+      return Object
+    case Sequelize.BOOLEAN:
+      return Boolean
+    case Sequelize.INTEGER:
+    case Sequelize.BIGINT:
+    case Sequelize.FLOAT:
+    case Sequelize.DECIMAL:
+    case Sequelize.DOUBLE:
+      return Number
+    case Sequelize.DATE:
+      return Date
+    default:
+      throw new Error(`do not support type: ${type}`)
+  }
+}
+```
 
 ## Why use it
 

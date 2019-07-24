@@ -64,6 +64,9 @@ describe(pack.name, function () {
       },
       data: { // all other data associcated with this user
         type: Sequelize.JSON
+      },
+      date: {
+        type: Sequelize.DATE
       }
     })
     inst.prototype.ac = function() {
@@ -71,14 +74,16 @@ describe(pack.name, function () {
     }
     let before = await inst.findAll()
     // create
+    let date1 = new Date()
     let a1 = await inst.create({
+      date: date1,
       data: {
         a: 0,
         b: []
       }
     })
     // console.log(a1)
-    expect(a1.ac()).toEqual('ac')
+    expect(a1.date).toEqual(date1)
     expect(a1.enabled).toEqual(true)
     expect(a1.signed).toEqual(true)
     expect(a1.privateChatOnly).toEqual(true)
@@ -120,6 +125,7 @@ describe(pack.name, function () {
     expect(fl[0].ac()).toEqual('ac')
     let fl1 = await inst.findAll()
     expect(fl[0].ac()).toEqual('ac')
+    expect(typeof JSON.stringify(fl)).toEqual('string')
 
     // findOne
     let oo = await inst.findOne({
