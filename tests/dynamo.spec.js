@@ -66,7 +66,9 @@ describe(pack.name, function () {
         type: Sequelize.JSON
       }
     })
-
+    inst.prototype.ac = function() {
+      return 'ac'
+    }
     let before = await inst.findAll()
     // create
     let a1 = await inst.create({
@@ -76,6 +78,7 @@ describe(pack.name, function () {
       }
     })
     console.log(a1)
+    expect(a1.ac()).toEqual('ac')
     expect(a1.enabled).toEqual(true)
     expect(a1.signed).toEqual(true)
     expect(a1.privateChatOnly).toEqual(true)

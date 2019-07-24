@@ -2,7 +2,7 @@
 import { generate } from 'shortid'
 
 export default function (Model, options) {
-  class DynamoModel {
+  class DynamoModel extends Model {
 
     static sync () {
       return
@@ -15,13 +15,8 @@ export default function (Model, options) {
       if (!inst.id) {
         inst.id = generate()
       }
-      let ist = new DynamoModel.Model(inst)
-      return ist.save().then(res => {
-        return {
-          ...res,
-          ...this
-        }
-      })
+      let ist = new this(inst)
+      return ist.save()
     }
   
     static findAll (query) {
@@ -93,7 +88,7 @@ export default function (Model, options) {
       })
     }
   }
-  DynamoModel.options = options
+  // DynamoModel.options = options
   DynamoModel.Model = Model
   return DynamoModel
 }
