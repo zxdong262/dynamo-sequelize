@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/zxdong262/dynamo-sequelize.svg?branch=release)](https://travis-ci.org/zxdong262/dynamo-sequelize)
 
-A sequelize wrapper to support Sequelize and Dynamodb.
+A sequelize wrapper to support Sequelize and Dynamodb(limited).
 
 ## Use
 
@@ -109,13 +109,14 @@ let oo = await inst.findOne({
 expect(oo.id).toEqual(id)
 ```
 
-## Supported features
+## Supported features && limitations
 
 - Enable dynamodb only when `dialect === 'dynamo'`
 - Only support Model deinfe by `inst.define`
 - Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`.
 - `find`, `findOne` and `findAll` only support `where` query.
 - `update` only support `where` query.
+- All `where` query must have `id`.
 - Set envs through .env file, check [.env.sample](.env.sample) for detail.
 - Supported data types:
 
