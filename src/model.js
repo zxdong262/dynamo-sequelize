@@ -1,6 +1,4 @@
 
-import { generate } from 'shortid'
-
 export default function (Model, options) {
   class DynamoModel extends Model {
 
@@ -11,9 +9,6 @@ export default function (Model, options) {
     static create (inst) {
       if (!inst) {
         throw new Error('create requires instance object')
-      }
-      if (!inst.id) {
-        inst.id = generate()
       }
       let ist = new this(inst)
       return ist.save()

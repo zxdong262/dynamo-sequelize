@@ -25,11 +25,11 @@ const sequelize = new SequelizeDynamo(
 let inst = sequelize.define('Ass', {
   id: { // Glip user ID
     type: Sequelize.STRING,
-    primaryKey: true
+    primaryKey: true,
+    defaultValue: generate
   },
   name: { // glip user name
-    type: Sequelize.STRING,
-    index: true
+    type: Sequelize.STRING
   },
   email: { // Glip user email
     type: Sequelize.STRING
@@ -140,8 +140,8 @@ expect(all.length).toEqual(2)
 - Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`.
 - `find`, `findOne` and `findAll` only support `where` query.
 - `update` only support `where` query.
-- By default id is hash key, support other hash key with `unique: true`.
-- All `where` query must have at least one hash key.
+- Support hash key with `primaryKey: true`.
+- All `where` query keys must have non empty value.
 - Set envs through .env file, check [.env.sample](.env.sample) for detail.
 - Supported data types:
 

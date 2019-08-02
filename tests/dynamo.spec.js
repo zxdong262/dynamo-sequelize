@@ -6,6 +6,7 @@ import Sequelize from 'sequelize'
 import Dynamo from '../dist/model'
 import dynamoose from 'dynamoose'
 import DynamoDbLocal from 'dynamodb-local'
+import { generate } from 'shortid'
 
 require('dotenv').config()
 
@@ -36,14 +37,14 @@ describe(pack.name, function () {
         dialect: 'dynamo'
       }
     )
-    let inst = sequelize.define('Ass', {
+    let inst = sequelize.define('Ass1' + new Date().getTime(), {
       id: { // Glip user ID
         type: Sequelize.STRING,
-        primaryKey: true
+        primaryKey: true,
+        defaultValue: generate
       },
       name: { // glip user name
-        type: Sequelize.STRING,
-        unique: true
+        type: Sequelize.STRING
       },
       email: { // Glip user email
         type: Sequelize.STRING
