@@ -50,6 +50,9 @@ export function seqSchemaToDynamoSchema(seqSchema) {
         return new Date(v).getTime()
       }
     }
+    if (v.primaryKey || v.unique) {
+      v.hashKey = true
+    }
     if (v.defaultValue) {
       def.default = v.defaultValue
     }

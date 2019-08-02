@@ -42,7 +42,8 @@ describe(pack.name, function () {
         primaryKey: true
       },
       name: { // glip user name
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true
       },
       email: { // Glip user email
         type: Sequelize.STRING
@@ -76,6 +77,7 @@ describe(pack.name, function () {
     // create
     let date1 = new Date()
     let a1 = await inst.create({
+      name: 'n1',
       date: date1,
       data: {
         a: 0,
@@ -112,7 +114,8 @@ describe(pack.name, function () {
 
     // find
     await inst.create({
-      id: 'xxx'
+      id: 'xxx',
+      name: 'n1',
     })
     let fl = await inst.find({
       where: {
@@ -134,5 +137,13 @@ describe(pack.name, function () {
       }
     })
     expect(oo.id).toEqual(id)
+
+    //find with sencondary index
+    let all = await inst.find({
+      where: {
+        name: 'n1'
+      }
+    })
+    expect(all.length).toEqual(2)
   })
 })

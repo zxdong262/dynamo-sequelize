@@ -28,7 +28,8 @@ let inst = sequelize.define('Ass', {
     primaryKey: true
   },
   name: { // glip user name
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    index: true
   },
   email: { // Glip user email
     type: Sequelize.STRING
@@ -50,17 +51,27 @@ let inst = sequelize.define('Ass', {
   },
   data: { // all other data associcated with this user
     type: Sequelize.JSON
+  },
+  date: {
+    type: Sequelize.DATE
   }
 })
-
+inst.prototype.ac = function() {
+  return 'ac'
+}
 let before = await inst.findAll()
 // create
+let date1 = new Date()
 let a1 = await inst.create({
+  name: 'n1',
+  date: date1,
   data: {
     a: 0,
     b: []
   }
 })
+// console.log(a1)
+expect(a1.date).toEqual(date1)
 expect(a1.enabled).toEqual(true)
 expect(a1.signed).toEqual(true)
 expect(a1.privateChatOnly).toEqual(true)
@@ -89,7 +100,8 @@ expect(a2.enabled).toEqual(false)
 
 // find
 await inst.create({
-  id: 'xxx'
+  id: 'xxx',
+  name: 'n1',
 })
 let fl = await inst.find({
   where: {
@@ -99,6 +111,10 @@ let fl = await inst.find({
 })
 expect(fl.length).toEqual(1)
 expect(fl[0].id).toEqual('xxx')
+expect(fl[0].ac()).toEqual('ac')
+let fl1 = await inst.findAll()
+expect(fl[0].ac()).toEqual('ac')
+expect(typeof JSON.stringify(fl)).toEqual('string')
 
 // findOne
 let oo = await inst.findOne({
@@ -107,6 +123,14 @@ let oo = await inst.findOne({
   }
 })
 expect(oo.id).toEqual(id)
+
+//find with sencondary index
+let all = await inst.find({
+  where: {
+    name: 'n1'
+  }
+})
+expect(all.length).toEqual(2)
 ```
 
 ## Supported features && limitations
@@ -116,7 +140,8 @@ expect(oo.id).toEqual(id)
 - Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`.
 - `find`, `findOne` and `findAll` only support `where` query.
 - `update` only support `where` query.
-- All `where` query must have `id`.
+- By default id is hash key, support other hash key with `unique: true`.
+- All `where` query must have at least one hash key.
 - Set envs through .env file, check [.env.sample](.env.sample) for detail.
 - Supported data types:
 
