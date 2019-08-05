@@ -100,6 +100,7 @@ describe(pack.name, function () {
     // findByPk
     let one = await inst.findByPk(id)
     expect(one.id).toEqual(a1.id)
+    expect(one.enabled).toEqual(true)
 
     // update
     await inst.update({
@@ -154,5 +155,14 @@ describe(pack.name, function () {
       }
     })
     expect(d1.id).toEqual(id)
+
+    // no result
+    let oox = await inst.findOne({
+      where: {
+        id: 'sdfs'
+      }
+    })
+    expect(oox).toEqual(undefined)
+
   })
 })

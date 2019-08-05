@@ -55,21 +55,17 @@ export default function (Model, options) {
           if (err) {
             reject(err)
           } else {
-            resolve(new this(result))
+            resolve(result ? new this(result) : result)
           }
         })
       })
     }
 
     static findByPk (id) {
-      return new Promise((resolve, reject) => {
-        DynamoModel.Model.get({ id }, (err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(new this(result))
-          }
-        })
+      return DynamoModel.findOne({
+        where: {
+          id
+        }
       })
     }
   
