@@ -146,5 +146,13 @@ describe(pack.name, function () {
       }
     })
     expect(all.length).toEqual(2)
+
+    // destroy
+    let d1 = await inst.destroy({
+      where: {
+        id
+      }
+    })
+    expect(d1.id).toEqual(id)
   })
 })

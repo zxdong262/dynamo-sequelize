@@ -85,6 +85,18 @@ export default function (Model, options) {
       })
     }
 
+    static destroy(query) {
+      return new Promise((resolve, reject) => {
+        DynamoModel.Model.delete(query.where, (err, result) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(result || 1)
+          }
+        })
+      })
+    }
+
     toJSON () {
       return Object.keys(this).filter(k => {
         return typeof this[k] !== 'function' &&
