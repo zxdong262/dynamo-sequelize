@@ -62,10 +62,14 @@ export default function (Model, options) {
     }
 
     static findByPk (id) {
-      return DynamoModel.findOne({
-        where: {
-          id
-        }
+      return new Promise((resolve, reject) => {
+        DynamoModel.Model.get({ id }, (err, result) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(result ? new this(result) : result)
+          }
+        })
       })
     }
   

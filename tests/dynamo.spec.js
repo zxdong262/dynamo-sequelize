@@ -101,6 +101,7 @@ describe(pack.name, function () {
     let one = await inst.findByPk(id)
     expect(one.id).toEqual(a1.id)
     expect(one.enabled).toEqual(true)
+    expect(one.ac()).toEqual('ac')
 
     // update
     await inst.update({
@@ -139,6 +140,7 @@ describe(pack.name, function () {
       }
     })
     expect(oo.id).toEqual(id)
+    expect(oo.ac()).toEqual('ac')
 
     //find with sencondary index
     let all = await inst.find({
