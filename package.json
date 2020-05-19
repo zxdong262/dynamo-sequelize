@@ -1,16 +1,18 @@
 {
   "name": "dynamo-sequelize",
-  "version": "0.7.2",
+  "version": "0.7.5",
   "description": "A sequelize wrapper to support Sequelize 5 and Dynamodb",
   "main": "dist/index.js",
   "scripts": {
     "test": "npm run build && ./node_modules/.bin/jest",
     "lint": "./node_modules/.bin/standard",
+    "fix": "./node_modules/.bin/standard --fix",
     "clean": "node build/clean.js",
     "release": "./build/release",
     "build": "npm run clean && npm run compile",
     "prepublishOnly": "npm run build",
-    "compile": "node_modules/.bin/babel src --out-dir dist"
+    "compile": "node_modules/.bin/babel src --out-dir dist",
+    "postinstall": "npm i --no-save sequelize"
   },
   "repository": {
     "type": "git",
@@ -37,6 +39,7 @@
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "@babel/register": "^7.0.0",
+    "babel-eslint": "^10.0.3",
     "dotenv": "^8.0.0",
     "dynamodb-local": "0.0.29",
     "jest": "^24.8.0",

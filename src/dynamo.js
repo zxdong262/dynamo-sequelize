@@ -12,7 +12,7 @@ if (process.env.DYNAMODB_LOCALHOST) {
   dynamoose.local(process.env.DYNAMODB_LOCALHOST)
 }
 
-function typeMapper(type) {
+function typeMapper (type) {
   switch (type) {
     case Sequelize.STRING:
     case Sequelize.TEXT:
@@ -34,19 +34,19 @@ function typeMapper(type) {
   }
 }
 
-export function seqSchemaToDynamoSchema(seqSchema) {
-  let keys = Object.keys(seqSchema)
+export function seqSchemaToDynamoSchema (seqSchema) {
+  const keys = Object.keys(seqSchema)
   return keys.reduce((prev, k) => {
-    let v = seqSchema[k]
-    let type = typeMapper(v.type)
-    let def = {
+    const v = seqSchema[k]
+    const type = typeMapper(v.type)
+    const def = {
       type
     }
     if (type === Date) {
-      def.get = function(v) {
+      def.get = function (v) {
         return new Date(v)
       }
-      def.set = function(v) {
+      def.set = function (v) {
         return new Date(v).getTime()
       }
     }
@@ -66,20 +66,22 @@ export function seqSchemaToDynamoSchema(seqSchema) {
 
 export default class Dynamo {
   constructor (...args) {
-    let len = args.length
-    let options = args[len - 1]
+    const len = args.length
+    const options = args[len - 1]
     this.options = options
   }
 
-  define(name, seqSchema) {
-    let conf = seqSchemaToDynamoSchema(seqSchema)
-    let sc = new Schema(conf, {
+  define (name, seqSchema) {
+    const conf = seqSchemaToDynamoSchema(seqSchema)
+    const sc = new Schema(conf, {
       timestamps: get(this.options, 'define.timestamps')
     })
-    let model = dynamoose.model(
+    const model = dynamoose.model(
       name,
       sc
     )
     return new DynamoModel(model, this.options)
   }
+
+  authenticate () {}
 }

@@ -124,13 +124,22 @@ let oo = await inst.findOne({
 })
 expect(oo.id).toEqual(id)
 
-//find with sencondary index
+// find with sencondary index
 let all = await inst.find({
   where: {
     name: 'n1'
   }
 })
 expect(all.length).toEqual(2)
+
+// contains query
+const all2 = await inst.find({
+  op: 'contains',
+  where: {
+    name: 'n'
+  }
+})
+expect(all2.length).toEqual(2)
 
 // destroy
 let d1 = await inst.destroy({

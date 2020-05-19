@@ -3,7 +3,6 @@
 import pack from '../package.json'
 import SequelizeDynamo from '../dist'
 import Sequelize from 'sequelize'
-import Dynamo from '../dist/model'
 import dynamoose from 'dynamoose'
 import DynamoDbLocal from 'dynamodb-local'
 import { generate } from 'shortid'
@@ -37,7 +36,7 @@ describe(pack.name, function () {
         dialect: 'dynamo'
       }
     )
-    let inst = sequelize.define('Ass1' + new Date().getTime(), {
+    const inst = sequelize.define('Ass1' + new Date().getTime(), {
       id: { // Glip user ID
         type: Sequelize.STRING,
         primaryKey: true,
@@ -71,13 +70,13 @@ describe(pack.name, function () {
         type: Sequelize.DATE
       }
     })
-    inst.prototype.ac = function() {
+    inst.prototype.ac = function () {
       return 'ac'
     }
-    let before = await inst.findAll()
+    const before = await inst.findAll()
     // create
-    let date1 = new Date()
-    let a1 = await inst.create({
+    const date1 = new Date()
+    const a1 = await inst.create({
       name: 'n1',
       date: date1,
       data: {
@@ -92,13 +91,13 @@ describe(pack.name, function () {
     expect(a1.privateChatOnly).toEqual(true)
     expect(a1.data.a).toEqual(0)
     expect(a1.data.b.length).toEqual(0)
-    let { id } = a1
-    let after = await inst.findAll()
+    const { id } = a1
+    const after = await inst.findAll()
     // findAll
     expect(after.length).toEqual(before.length + 1)
 
     // findByPk
-    let one = await inst.findByPk(id)
+    const one = await inst.findByPk(id)
     expect(one.id).toEqual(a1.id)
     expect(one.enabled).toEqual(true)
     expect(one.ac()).toEqual('ac')
@@ -112,15 +111,15 @@ describe(pack.name, function () {
       }
     })
 
-    let a2 = await inst.findByPk(id)
+    const a2 = await inst.findByPk(id)
     expect(a2.enabled).toEqual(false)
 
     // find
     await inst.create({
       id: 'xxx',
-      name: 'n1',
+      name: 'n1'
     })
-    let fl = await inst.find({
+    const fl = await inst.find({
       where: {
         id: 'xxx',
         enabled: true
@@ -129,12 +128,12 @@ describe(pack.name, function () {
     expect(fl.length).toEqual(1)
     expect(fl[0].id).toEqual('xxx')
     expect(fl[0].ac()).toEqual('ac')
-    let fl1 = await inst.findAll()
+    await inst.findAll()
     expect(fl[0].ac()).toEqual('ac')
     expect(typeof JSON.stringify(fl)).toEqual('string')
 
     // findOne
-    let oo = await inst.findOne({
+    const oo = await inst.findOne({
       where: {
         id
       }
@@ -142,16 +141,25 @@ describe(pack.name, function () {
     expect(oo.id).toEqual(id)
     expect(oo.ac()).toEqual('ac')
 
-    //find with sencondary index
-    let all = await inst.find({
+    // find with sencondary index
+    const all = await inst.find({
       where: {
         name: 'n1'
       }
     })
     expect(all.length).toEqual(2)
 
+    // contains query
+    const all2 = await inst.find({
+      op: 'contains',
+      where: {
+        name: 'n'
+      }
+    })
+    expect(all2.length).toEqual(2)
+
     // destroy
-    let d1 = await inst.destroy({
+    const d1 = await inst.destroy({
       where: {
         id
       }
@@ -159,12 +167,11 @@ describe(pack.name, function () {
     expect(d1.id).toEqual(id)
 
     // no result
-    let oox = await inst.findOne({
+    const oox = await inst.findOne({
       where: {
         id: 'sdfs'
       }
     })
     expect(oox).toEqual(undefined)
-
   })
 })

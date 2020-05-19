@@ -1,19 +1,18 @@
 
 export default function (Model, options) {
   class DynamoModel extends Model {
-
     static sync () {
-      return
+
     }
 
     static create (inst) {
       if (!inst) {
         throw new Error('create requires instance object')
       }
-      let ist = new this(inst)
+      const ist = new this(inst)
       return ist.save()
     }
-  
+
     static findAll (query) {
       if (!query) {
         return DynamoModel
@@ -27,10 +26,11 @@ export default function (Model, options) {
       ) {
         throw new Error('findAll/find requires where params')
       }
-      let q = Object.keys(query.where)
+      const { op = 'eq' } = query
+      const q = Object.keys(query.where)
         .reduce((prev, k) => {
           prev[k] = {
-            eq: query.where[k]
+            [op]: query.where[k]
           }
           return prev
         }, {})
@@ -44,7 +44,7 @@ export default function (Model, options) {
         })
       })
     }
-  
+
     static find (...args) {
       return DynamoModel.findAll(...args)
     }
@@ -72,8 +72,8 @@ export default function (Model, options) {
         })
       })
     }
-  
-    static update(update, query) {
+
+    static update (update, query) {
       return new Promise((resolve, reject) => {
         DynamoModel.Model.update(query.where, update, (err, result) => {
           if (err) {
@@ -85,7 +85,7 @@ export default function (Model, options) {
       })
     }
 
-    static destroy(query) {
+    static destroy (query) {
       return new Promise((resolve, reject) => {
         DynamoModel.Model.delete(query.where, (err, result) => {
           if (err) {

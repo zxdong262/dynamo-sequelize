@@ -4,16 +4,6 @@ import pack from '../package.json'
 import Sequelize from '../dist'
 import SequelizeOrig from 'sequelize'
 
-const {
-  RINGCENTRAL_ENGAGE_VERIFY_TOKEN
-} = process.env
-
-function wait (time) {
-  return new Promise(resolve => {
-    setTimeout(resolve, time)
-  })
-}
-
 jest.setTimeout(99999)
 
 describe(pack.name, function () {
