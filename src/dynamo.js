@@ -30,6 +30,7 @@ function typeMapper (type, key, v) {
     case Sequelize.DATE:
       return Date
     default:
+      console.log(typeof type)
       throw new Error(`do not support type: ${type} for key: ${key}, define: ${JSON.stringify(v)}`)
   }
 }
