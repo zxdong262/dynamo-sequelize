@@ -12,26 +12,26 @@ if (process.env.DYNAMODB_LOCALHOST) {
   dynamoose.local(process.env.DYNAMODB_LOCALHOST)
 }
 
-function typeMapper (type, key, v) {
-  switch (type) {
-    case Sequelize.STRING:
-    case Sequelize.TEXT:
+function typeMapper (type, key) {
+  const stringType = type.toString()
+  switch (stringType) {
+    case 'STRING':
+    case 'TEXT':
       return String
-    case Sequelize.JSON:
+    case 'JSONTYPE':
       return Object
-    case Sequelize.BOOLEAN:
+    case 'BOOLEAN':
       return Boolean
-    case Sequelize.INTEGER:
-    case Sequelize.BIGINT:
-    case Sequelize.FLOAT:
-    case Sequelize.DECIMAL:
-    case Sequelize.DOUBLE:
+    case 'INTEGER':
+    case 'BIGINT':
+    case 'FLOAT':
+    case 'DECIMAL':
+    case 'DOUBLE':
       return Number
-    case Sequelize.DATE:
+    case 'DATE':
       return Date
     default:
-      console.log(typeof type)
-      throw new Error(`do not support type: ${type} for key: ${key}, define: ${JSON.stringify(v)}`)
+      throw new Error(`do not support type: ${type} for key: ${key}`)
   }
 }
 
