@@ -12,7 +12,7 @@ if (process.env.DYNAMODB_LOCALHOST) {
   dynamoose.local(process.env.DYNAMODB_LOCALHOST)
 }
 
-function typeMapper (type, key) {
+function typeMapper (type, key, v) {
   switch (type) {
     case Sequelize.STRING:
     case Sequelize.TEXT:
@@ -30,7 +30,7 @@ function typeMapper (type, key) {
     case Sequelize.DATE:
       return Date
     default:
-      throw new Error(`do not support type: ${type} for key: ${key}`)
+      throw new Error(`do not support type: ${type} for key: ${key}, define: ${JSON.stringify(v)}`)
   }
 }
 
@@ -38,7 +38,7 @@ export function seqSchemaToDynamoSchema (seqSchema) {
   const keys = Object.keys(seqSchema)
   return keys.reduce((prev, k) => {
     const v = seqSchema[k]
-    const type = typeMapper(v.type, k)
+    const type = typeMapper(v.type, k, v)
     const def = {
       type
     }
