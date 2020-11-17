@@ -116,7 +116,15 @@ let fl1 = await inst.findAll()
 expect(fl[0].ac()).toEqual('ac')
 expect(typeof JSON.stringify(fl)).toEqual('string')
 
-// findOne
+// getOne will scan until get at least one result, and return array
+let oo = await inst.getOne({
+  where: {
+    name: 'n1'
+  }
+})
+expect(oo[0].id).toEqual(id)
+
+// findOne only support id query
 let oo = await inst.findOne({
   where: {
     id

@@ -74,8 +74,17 @@ describe(pack.name, function () {
       return 'ac'
     }
     const before = await inst.findAll()
+    expect(before.queryCount).toEqual(1)
     // create
     const date1 = new Date()
+    const a0 = await inst.create({
+      name: 'n1dddd',
+      date: date1,
+      data: {
+        a: 0,
+        b: []
+      }
+    })
     const a1 = await inst.create({
       name: 'n1',
       date: date1,
@@ -94,8 +103,22 @@ describe(pack.name, function () {
     const { id } = a1
     const after = await inst.findAll()
     // findAll
-    expect(after.length).toEqual(before.length + 1)
+    expect(after.length).toEqual(before.length + 2)
+    const after1 = await inst.findAll({ limit: 1 })
+    // findAll
+    expect(after1.length).toEqual(before.length + 2)
+    expect(after1.queryCount).toEqual(3)
 
+    // getOne
+    const get1 = await inst.getOne({
+      where: {
+        name: 'n1dddd'
+      },
+      limit: 1
+    })
+    console.log(get1, 'gte1')
+    expect(get1[0].id).toEqual(a0.id)
+    expect(get1.queryCount).toEqual(2)
     // findByPk
     const one = await inst.findByPk(id)
     expect(one.id).toEqual(a1.id)
@@ -113,6 +136,7 @@ describe(pack.name, function () {
 
     const a2 = await inst.findByPk(id)
     expect(a2.enabled).toEqual(false)
+    expect(a2.date).toEqual(date1)
 
     // find
     await inst.create({
@@ -156,7 +180,7 @@ describe(pack.name, function () {
         name: 'n'
       }
     })
-    expect(all2.length).toEqual(2)
+    expect(all2.length).toEqual(3)
 
     // destroy
     const d1 = await inst.destroy({

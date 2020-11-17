@@ -13,18 +13,35 @@ export default function (Model, options) {
       return ist.save()
     }
 
-    static findAll (query) {
-      if (!query) {
-        return DynamoModel
-          .Model.scan().exec()
-          .then(result => result.map(r => new this(r)))
-      }
+    static async findAll (q) {
+      const result = []
+      result.queryCount = 0
+      do {
+        const scan = DynamoModel
+          .Model.scan()
+        if (result.lastKey) {
+          scan.startAt(result.lastKey)
+        }
+        if (q && q.limit) {
+          scan.limit(q.limit)
+        }
+        await scan.exec()
+          .then(r => {
+            result.push.apply(result, r.map(x => new this(x)))
+            result.queryCount++
+            result.lastKey = r.lastKey
+          })
+      } while (result.lastKey)
+      return result
+    }
+
+    static async find (query, limit) {
       if (
         !query ||
         !query.where ||
         !Object.keys(query.where).length
       ) {
-        throw new Error('findAll/find requires where params')
+        throw new Error('find requires where params')
       }
       const { op = 'eq' } = query
       const q = Object.keys(query.where)
@@ -34,19 +51,35 @@ export default function (Model, options) {
           }
           return prev
         }, {})
-      return new Promise((resolve, reject) => {
-        DynamoModel.Model.scan(q, (err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result.map(r => new this(r)))
-          }
-        })
-      })
+      const result = []
+      result.queryCount = 0
+      do {
+        const scan = DynamoModel
+          .Model.scan(q)
+        if (result.lastKey) {
+          scan.startAt(result.lastKey)
+        }
+        if (query.limit) {
+          scan.limit(query.limit)
+        }
+        await scan.exec()
+          .then(r => {
+            result.push.apply(result, r.map(x => new this(x)))
+            result.queryCount++
+            if (limit && result.length >= limit) {
+              result.lastKey = undefined
+            } else {
+              result.lastKey = r.lastKey
+            }
+          })
+      } while (
+        result.lastKey
+      )
+      return result
     }
 
-    static find (...args) {
-      return DynamoModel.findAll(...args)
+    static async getOne (query) {
+      return DynamoModel.find(query, 1)
     }
 
     static findOne (query) {
