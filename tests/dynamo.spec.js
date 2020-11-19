@@ -108,17 +108,36 @@ describe(pack.name, function () {
     // findAll
     expect(after1.length).toEqual(before.length + 2)
     expect(after1.queryCount).toEqual(3)
+    // find with limit
+    const after2 = await inst.find({
+      op: 'contains',
+      where: {
+        name: 'n'
+      }
+    }, 1)
+    expect(after2.length).toEqual(before.length + 1)
+    expect(after2.queryCount).toEqual(1)
+
+    // batchGet
+    const after3 = await inst.batchGet([
+      {
+        id: a0.id
+      },
+      {
+        id: a1.id
+      }
+    ])
+    expect(after3.length).toEqual(before.length + 2)
 
     // getOne
     const get1 = await inst.getOne({
       where: {
         name: 'n1dddd'
-      },
-      limit: 1
+      }
     })
     console.log(get1, 'gte1')
     expect(get1[0].id).toEqual(a0.id)
-    expect(get1.queryCount).toEqual(2)
+    expect(get1.queryCount).toEqual(1)
     // findByPk
     const one = await inst.findByPk(id)
     expect(one.id).toEqual(a1.id)

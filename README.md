@@ -122,6 +122,8 @@ let oo = await inst.getOne({
     name: 'n1'
   }
 })
+// same as inst.find({where:{name:'n1'}}, 1)
+// or inst.find({limit:1,where:{name:'n1'}}, 1)
 expect(oo[0].id).toEqual(id)
 
 // findOne only support id query
@@ -130,9 +132,19 @@ let oo = await inst.findOne({
     id
   }
 })
+// same as inst.findByPk(id)
 expect(oo.id).toEqual(id)
 
-// find with sencondary index
+// batchGet
+let all = await inst.batchGet([
+  {
+    id: 'id1'
+  },
+  {
+    id: 'id2'
+  }
+])
+// find support none id, but this will scan all db
 let all = await inst.find({
   where: {
     name: 'n1'

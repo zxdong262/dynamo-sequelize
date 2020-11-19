@@ -35,7 +35,7 @@ export default function (Model, options) {
       return result
     }
 
-    static async find (query, limit) {
+    static async find (query, _limit) {
       if (
         !query ||
         !query.where ||
@@ -53,14 +53,15 @@ export default function (Model, options) {
         }, {})
       const result = []
       result.queryCount = 0
+      const limit = query.limit || _limit
       do {
         const scan = DynamoModel
           .Model.scan(q)
         if (result.lastKey) {
           scan.startAt(result.lastKey)
         }
-        if (query.limit) {
-          scan.limit(query.limit)
+        if (limit) {
+          scan.limit(limit)
         }
         await scan.exec()
           .then(r => {
@@ -101,6 +102,18 @@ export default function (Model, options) {
             reject(err)
           } else {
             resolve(result ? new this(result) : result)
+          }
+        })
+      })
+    }
+
+    static batchGet (querys) {
+      return new Promise((resolve, reject) => {
+        DynamoModel.Model.batchGet(querys, (err, results) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(results.map(x => new this(x)))
           }
         })
       })
