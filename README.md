@@ -1,5 +1,7 @@
 # dynamo-sequelize
 
+## DO NOT USE IT
+
 [![Build Status](https://travis-ci.org/zxdong262/dynamo-sequelize.svg?branch=release)](https://travis-ci.org/zxdong262/dynamo-sequelize)
 
 A sequelize wrapper to support Sequelize and Dynamodb(limited).

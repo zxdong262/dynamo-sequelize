@@ -3,26 +3,26 @@
 import pack from '../package.json'
 import SequelizeDynamo from '../dist'
 import Sequelize from 'sequelize'
-import dynamoose from 'dynamoose'
-import DynamoDbLocal from 'dynamodb-local'
+// import dynamoose from 'dynamoose'
+// import DynamoDbLocal from 'dynamodb-local'
 import { generate } from 'shortid'
 
 require('dotenv').config()
 
-const dynamoLocalPort = 8000
-let handle
+// const dynamoLocalPort = 8000
+// let handle
 
 jest.setTimeout(99999)
 
-beforeEach(async () => {
-  // do your tests
-  handle = await DynamoDbLocal.launch(dynamoLocalPort, null, [], false, true)
-  dynamoose.local()
-})
+// beforeEach(async () => {
+//   // do your tests
+//   handle = await DynamoDbLocal.launch(dynamoLocalPort, null, [], false, true)
+//   dynamoose.local()
+// })
 
-afterEach(async () => {
-  await DynamoDbLocal.stopChild(handle)
-})
+// afterEach(async () => {
+//   await DynamoDbLocal.stopChild(handle)
+// })
 
 describe(pack.name, function () {
   test('model', async () => {
@@ -102,12 +102,10 @@ describe(pack.name, function () {
     expect(a1.data.b.length).toEqual(0)
     const { id } = a1
     const after = await inst.findAll()
+
     // findAll
     expect(after.length).toEqual(before.length + 2)
-    const after1 = await inst.findAll({ limit: 1 })
-    // findAll
-    expect(after1.length).toEqual(before.length + 2)
-    expect(after1.queryCount).toEqual(3)
+
     // find with limit
     const after2 = await inst.find({
       op: 'contains',
@@ -135,9 +133,9 @@ describe(pack.name, function () {
         name: 'n1dddd'
       }
     })
-    console.log(get1, 'gte1')
+    // console.log(get1, 'gte1')
     expect(get1[0].id).toEqual(a0.id)
-    expect(get1.queryCount).toEqual(1)
+    expect(get1.queryCount >= 1).toEqual(true)
     // findByPk
     const one = await inst.findByPk(id)
     expect(one.id).toEqual(a1.id)
@@ -216,5 +214,18 @@ describe(pack.name, function () {
       }
     })
     expect(oox).toEqual(undefined)
+
+    for (let iii = 0; iii < 10; iii++) {
+      await inst.create({
+        id: iii + 'id',
+        name: iii + 'name'
+      })
+    }
+    // lastKey support in findAll
+    const all1 = await inst.findAll({ limit: 1 })
+    expect(all1.length >= 1).toEqual(true)
+    expect(all1.queryCount).toEqual(1)
+    const alll2 = await inst.findAll({ limit: 1, lastKey: all1.lastKey })
+    expect(alll2.queryCount).toEqual(1)
   })
 })

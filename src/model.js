@@ -15,7 +15,12 @@ export default function (Model, options) {
 
     static async findAll (q) {
       const result = []
+      if (q && q.lastKey) {
+        result.lastKey = q.lastKey
+      }
       result.queryCount = 0
+      const limit = q && q.limit ? q.limit : 0
+      let ok = false
       do {
         const scan = DynamoModel
           .Model.scan()
@@ -29,9 +34,12 @@ export default function (Model, options) {
           .then(r => {
             result.push.apply(result, r.map(x => new this(x)))
             result.queryCount++
+            if (limit && result.length >= limit) {
+              ok = true
+            }
             result.lastKey = r.lastKey
           })
-      } while (result.lastKey)
+      } while (!ok && result.lastKey)
       return result
     }
 
@@ -147,7 +155,7 @@ export default function (Model, options) {
       return Object.keys(this).filter(k => {
         return typeof this[k] !== 'function' &&
           'value' in Object.getOwnPropertyDescriptor(this, k) &&
-          k !== `$__`
+          k !== '$__'
       }).reduce((prev, k) => {
         return {
           ...prev,
