@@ -1,28 +1,32 @@
 /* eslint-env jest */
-
-import pack from '../package.json'
-import SequelizeDynamo from '../dist'
-import Sequelize from 'sequelize'
-// import dynamoose from 'dynamoose'
-// import DynamoDbLocal from 'dynamodb-local'
-import { generate } from 'shortid'
-
 require('dotenv').config()
+require('./common/init')
 
-// const dynamoLocalPort = 8000
-// let handle
+const pack = require('../package.json')
+const { DataTypes: Sequelize } = require('sequelize')
+const SequelizeDynamo = require('../dist').default
+const dynamoose = require('dynamoose')
+const DynamoDbLocal = require('dynamodb-local')
+const { nanoid } = require('nanoid')
+
+function generate () {
+  return nanoid(7)
+}
+
+const dynamoLocalPort = 8000
+let handle
 
 jest.setTimeout(99999)
 
-// beforeEach(async () => {
-//   // do your tests
-//   handle = await DynamoDbLocal.launch(dynamoLocalPort, null, [], false, true)
-//   dynamoose.local()
-// })
+beforeEach(async () => {
+  // do your tests
+  handle = await DynamoDbLocal.launch(dynamoLocalPort, null, [], false, true)
+  dynamoose.aws.ddb.local()
+})
 
-// afterEach(async () => {
-//   await DynamoDbLocal.stopChild(handle)
-// })
+afterEach(async () => {
+  await DynamoDbLocal.stopChild(handle)
+})
 
 describe(pack.name, function () {
   test('model', async () => {
@@ -36,7 +40,7 @@ describe(pack.name, function () {
         dialect: 'dynamo'
       }
     )
-    const inst = sequelize.define('Ass1' + new Date().getTime(), {
+    const inst = sequelize.define('DRAKE_TEMP_TEST' + new Date().getTime(), {
       id: { // Glip user ID
         type: Sequelize.STRING,
         primaryKey: true,
@@ -93,8 +97,8 @@ describe(pack.name, function () {
         b: []
       }
     })
-    // console.log(a1)
-    expect(a1.date).toEqual(date1)
+    console.log(a1)
+    expect(new Date(a1.date)).toEqual(date1)
     expect(a1.enabled).toEqual(true)
     expect(a1.signed).toEqual(true)
     expect(a1.privateChatOnly).toEqual(true)
@@ -205,7 +209,7 @@ describe(pack.name, function () {
         id
       }
     })
-    expect(d1.id).toEqual(id)
+    expect(d1).toEqual(1)
 
     // no result
     const oox = await inst.findOne({

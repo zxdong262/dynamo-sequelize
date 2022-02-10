@@ -1,18 +1,20 @@
 {
   "name": "dynamo-sequelize",
-  "version": "0.8.2",
-  "description": "A sequelize wrapper to support Sequelize 5 and Dynamodb",
-  "main": "dist/index.js",
+  "version": "1.0.0",
+  "description": "A sequelize wrapper to support Sequelize 6+ and Dynamodb",
+  "main": "dist/dynamo-sequelize.js",
   "scripts": {
-    "test": "npm run build && ./node_modules/.bin/jest",
+    "test": "npm run build && npm run lint && npm run jest",
     "lint": "./node_modules/.bin/standard",
-    "fix": "./node_modules/.bin/standard --fix",
+    "fix": "./node_modules/.bin/ts-standard --fix",
     "clean": "node build/clean.js",
+    "jest": "./node_modules/.bin/jest --coverage",
     "release": "./build/release",
     "build": "npm run clean && npm run compile",
     "prepublishOnly": "npm run build",
-    "compile": "node_modules/.bin/babel src --out-dir dist",
-    "postinstall": "npm i --no-save sequelize"
+    "compile": "tsc",
+    "postinstall": "npm i --no-save sequelize",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -29,29 +31,26 @@
   },
   "homepage": "https://github.com/zxdong262/dynamo-sequelize#readme",
   "dependencies": {
-    "@babel/runtime": "^7.4.4",
-    "dynamoose": "^1.10.0",
-    "lodash.get": "^4.4.2",
-    "shortid": "^2.2.14"
+    "sequelize": "^6.16.1",
+    "dynamoose": "^2.8.5",
+    "lodash.get": "^4.4.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.3",
-    "@babel/register": "^7.0.0",
-    "babel-eslint": "^10.0.3",
-    "dotenv": "^8.0.0",
-    "dynamodb-local": "0.0.29",
-    "jest": "^24.8.0",
-    "shelljs": "^0.8.3",
-    "sqlite3": "^4.0.9",
-    "standard": "^13.0.2"
-  },
-  "peerDependencies": {
-    "sequelize": ">=5.21.10"
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/jest": "^27.4.0",
+    "@types/lodash.get": "^4.4.6",
+    "coveralls": "^3.1.1",
+    "dotenv": "^10.0.0",
+    "dotenv-override-true": "^6.2.2",
+    "dynamodb-local": "0.0.31",
+    "jest": "^27.3.1",
+    "nanoid": "^3.2.0",
+    "shelljs": "^0.8.5",
+    "sqlite3": "^5.0.2",
+    "standard": "^16.0.4",
+    "typescript": "^4.4.4"
   },
   "standard": {
-    "parser": "babel-eslint",
     "ignore": [
       "*-compiled.js",
       "/dist/"
@@ -61,5 +60,10 @@
     "roots": [
       "tests"
     ]
-  }
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE"
+  ]
 }

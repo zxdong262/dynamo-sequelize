@@ -1,10 +1,11 @@
-import Sequelize from 'sequelize'
+import { Sequelize } from 'sequelize'
 import Dynamo from './dynamo'
+import { Options } from './types'
 
 export default class DynamoWrapper {
-  constructor (...args) {
+  constructor (...args: []) {
     const len = args.length
-    const options = args[len - 1]
+    const options: Options = args[len - 1]
     if (
       options &&
       (options.dialect === 'dynamo' || options.dialect === 'dynamodb')

@@ -1,8 +1,7 @@
 # dynamo-sequelize
 
-## DO NOT USE IT
-
-[![Build Status](https://travis-ci.org/zxdong262/dynamo-sequelize.svg?branch=release)](https://travis-ci.org/zxdong262/dynamo-sequelize)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fatrox%2Fsync-dotenv%2Fbadge)](https://github.com/zxdong262/dynamo-sequelize/actions)
+[![Coverage Status](https://coveralls.io/repos/github/zxdong262/dynamo-sequelize/badge.svg?branch=release)](https://coveralls.io/github/zxdong262/dynamo-sequelize?branch=release)
 
 A sequelize wrapper to support Sequelize and Dynamodb(limited).
 
