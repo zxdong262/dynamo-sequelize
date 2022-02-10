@@ -30,7 +30,8 @@ jobs:
     # script:
     - run: npm run test
       env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_REGION: us-east-1
         DYNAMODB_LOCALHOST: http://localhost:8000
     - name: coveralls
