@@ -24,19 +24,19 @@ const sequelize = new SequelizeDynamo(
     dialect: 'dynamo'
   }
 )
-let inst = sequelize.define('Ass', {
-  id: { // Glip user ID
+let inst = sequelize.define('User', {
+  id: {
     type: Sequelize.STRING,
     primaryKey: true,
     defaultValue: generate
   },
-  name: { // glip user name
+  name: {
     type: Sequelize.STRING
   },
-  email: { // Glip user email
+  email: {
     type: Sequelize.STRING
   },
-  token: { // user token
+  token: {
     type: Sequelize.JSON
   },
   enabled: {
@@ -51,7 +51,7 @@ let inst = sequelize.define('Ass', {
     type: Sequelize.BOOLEAN,
     defaultValue: true
   },
-  data: { // all other data associcated with this user
+  data: {
     type: Sequelize.JSON
   },
   date: {
