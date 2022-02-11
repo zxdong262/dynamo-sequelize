@@ -36,21 +36,6 @@ let inst = sequelize.define('User', {
   email: {
     type: Sequelize.STRING
   },
-  token: {
-    type: Sequelize.JSON
-  },
-  enabled: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: true
-  },
-  signed: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: true
-  },
-  privateChatOnly: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: true
-  },
   data: {
     type: Sequelize.JSON
   },
@@ -62,124 +47,64 @@ inst.prototype.ac = function() {
   return 'ac'
 }
 let before = await inst.findAll()
-// create
-let date1 = new Date()
-let a1 = await inst.create({
-  name: 'n1',
-  date: date1,
-  data: {
-    a: 0,
-    b: []
+```
+
+## Class methods
+
+```js
+inst.find({
+  limit: 1, // optional
+  op: 'eq', //optional, could be 'contains'
+  where: {
+    name: 'x'
   }
 })
-// console.log(a1)
-expect(a1.date).toEqual(date1)
-expect(a1.enabled).toEqual(true)
-expect(a1.signed).toEqual(true)
-expect(a1.privateChatOnly).toEqual(true)
-expect(a1.data.a).toEqual(0)
-expect(a1.data.b.length).toEqual(0)
-let { id } = a1
-let after = await inst.findAll()
-// findAll
-expect(after.length).toEqual(before.length + 1)
-
-// findByPk
-let one = await inst.findByPk(id)
-expect(one.id).toEqual(a1.id)
-
-// update
-await inst.update({
-  enabled: false
+inst.findAll()
+inst.getOne({
+  where: {
+    name: 'xxx'
+  }
+})
+inst.findOne({
+  where: {
+    id: 'xxx'
+  }
+})
+inst.findByPk('xxx')
+inst.create({
+  id: 'xxx'
+  name: 'yyyy'
+})
+inst.update({
+  name: 'gggg'
 }, {
   where: {
-    id
+    id: 'xxx'
   }
 })
-
-let a2 = await inst.findByPk(id)
-expect(a2.enabled).toEqual(false)
-
-// find
-await inst.create({
-  id: 'xxx',
-  name: 'n1',
-})
-let fl = await inst.find({
+inst.destroy({
   where: {
-    id: 'xxx',
-    enabled: true
+    id: 'xxx'
   }
 })
-expect(fl.length).toEqual(1)
-expect(fl[0].id).toEqual('xxx')
-expect(fl[0].ac()).toEqual('ac')
-let fl1 = await inst.findAll()
-expect(fl[0].ac()).toEqual('ac')
-expect(typeof JSON.stringify(fl)).toEqual('string')
-
-// getOne will scan until get at least one result, and return array
-let oo = await inst.getOne({
-  where: {
-    name: 'n1'
-  }
-})
-// same as inst.find({where:{name:'n1'}}, 1)
-// or inst.find({limit:1,where:{name:'n1'}}, 1)
-expect(oo[0].id).toEqual(id)
-
-// findOne only support id query
-let oo = await inst.findOne({
-  where: {
-    id
-  }
-})
-// same as inst.findByPk(id)
-expect(oo.id).toEqual(id)
-
-// batchGet
-let all = await inst.batchGet([
+inst.batchGet([
   {
-    id: 'id1'
+    id: 'xxx'
   },
   {
-    id: 'id2'
+    id: 'yyy'
   }
 ])
-// find support none id, but this will scan all db
-let all = await inst.find({
-  where: {
-    name: 'n1'
-  }
-})
-expect(all.length).toEqual(2)
-
-// contains query
-const all2 = await inst.find({
-  op: 'contains',
-  where: {
-    name: 'n'
-  }
-})
-expect(all2.length).toEqual(2)
-
-// destroy
-let d1 = await inst.destroy({
-  where: {
-    id
-  }
-})
-expect(d1).toEqual(1)
 ```
+
+check more from [tests/dynamo.spec.js](tests/dynamo.spec.js)
 
 ## Supported features && limitations
 
 - Enable dynamodb only when `dialect === 'dynamo'`
 - Only support Model deinfe by `inst.define`
-- Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`, `destroy`.
-- `find`, `findOne` and `findAll` only support `where` query.
-- `update` only support `where` query.
-- Support hash key with `primaryKey: true`.
+- Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`, `destroy`, `batchGet`, `getOne`.
+- `find`, `findOne`, `getOne`, `findAll`, `update` and `destroy` only support `where` query.
 - All `where` query keys must have non empty value.
 - Set envs through .env file, check [.env.sample](.env.sample) for detail.
 - Supported data types:
@@ -208,9 +133,13 @@ function typeMapper(type) {
 }
 ```
 
-## Why use it
+## User tip about performance
 
-Sequelize is really easy to use, just lack dynamodb support, while for AWS Lambda user, Dynamodb ease the pain of VPS settings, more ideal for lightweight services. With this module you may migrate to Dynamodb easily.
+- Model methods: `find`, `findAll`, `getOne` use dynamodb scan, so be careful, in big dataset, this may cost unacceptable time.
+
+## Why/when to use it
+
+Sequelize is really easy to use, just lack dynamodb support, while for AWS Lambda user, Dynamodb ease the pain of VPS settings, ideal for lightweight services. With this module you may migrate to Dynamodb easily.
 
 ## Build/test
 
