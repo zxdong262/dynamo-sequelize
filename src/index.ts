@@ -15,3 +15,5 @@ export default class DynamoWrapper {
     return new Sequelize(...args)
   }
 }
+
+module.exports = DynamoWrapper

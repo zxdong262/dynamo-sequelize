@@ -4,7 +4,7 @@ require('./common/init')
 
 const pack = require('../package.json')
 const { DataTypes: Sequelize } = require('sequelize')
-const SequelizeDynamo = require('../dist').default
+const SequelizeDynamo = require('../dist')
 const dynamoose = require('dynamoose')
 const DynamoDbLocal = require('dynamodb-local')
 const { nanoid } = require('nanoid')
@@ -97,7 +97,6 @@ describe(pack.name, function () {
         b: []
       }
     })
-    console.log(a1)
     expect(new Date(a1.date)).toEqual(date1)
     expect(a1.enabled).toEqual(true)
     expect(a1.signed).toEqual(true)

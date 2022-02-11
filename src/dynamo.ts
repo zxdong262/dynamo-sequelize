@@ -102,3 +102,5 @@ export default class Dynamo {
 
   authenticate () {}
 }
+
+module.exports = Dynamo

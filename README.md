@@ -10,6 +10,7 @@ A sequelize wrapper to support Sequelize and Dynamodb(limited).
 ```js
 import Sequelize from 'sequelize'
 import SequelizeDynamo from 'dynamo-sequelize'
+// or const SequelizeDynamo = require('dynamo-sequelize')
 
 // Only when dialect === 'dynamo', will use dynamodb,
 // otherwise all args passes to Sequelize

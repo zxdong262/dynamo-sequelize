@@ -4,8 +4,8 @@ require('dotenv').config()
 require('./common/init')
 
 const pack = require('../package.json')
-const Sequelize = require('../dist').default
-const Dynamo = require('../dist/dynamo').default
+const Sequelize = require('../dist')
+const Dynamo = require('../dist/dynamo')
 const dynamoose = require('dynamoose')
 const { Sequelize: SequelizeOrig } = require('sequelize')
 const DynamoDbLocal = require('dynamodb-local')
