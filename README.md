@@ -169,14 +169,14 @@ let d1 = await inst.destroy({
     id
   }
 })
-expect(d1.id).toEqual(id)
+expect(d1).toEqual(1)
 ```
 
 ## Supported features && limitations
 
 - Enable dynamodb only when `dialect === 'dynamo'`
 - Only support Model deinfe by `inst.define`
-- Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`.
+- Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`, `destroy`.
 - `find`, `findOne` and `findAll` only support `where` query.
 - `update` only support `where` query.
 - Support hash key with `primaryKey: true`.
@@ -219,7 +219,7 @@ Sequelize is really easy to use, just lack dynamodb support, while for AWS Lambd
 npm run build
 
 # test
-npm run test
+npm run jest
 ```
 
 ## License
