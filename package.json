@@ -1,6 +1,6 @@
 {
   "name": "dynamo-sequelize",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A sequelize wrapper to support Sequelize 6+ and Dynamodb",
   "main": "dist/dynamo-sequelize.js",
   "scripts": {
@@ -13,7 +13,6 @@
     "build": "npm run clean && npm run compile",
     "prepublishOnly": "npm run build",
     "compile": "tsc",
-    "postinstall": "npm i --no-save sequelize",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
