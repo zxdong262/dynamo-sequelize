@@ -12,12 +12,13 @@ export default function model (Model: any, options: Options): any {
 
     }
 
-    static create (inst: DynamoModel) {
+    static async create (inst: DynamoModel) {
       if (!inst) {
         throw new Error('create requires instance object')
       }
       const ist = new this(inst)
-      return ist.save()
+      const r = await ist.save()
+      return new this(r)
     }
 
     static async findAll (q: Options | undefined) {

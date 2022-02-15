@@ -27,7 +27,7 @@ afterEach(async () => {
 
 describe(pack.name, function () {
   test('dialect != dynamo', async () => {
-    const sequelize = new Sequelize({
+    const sequelize = new Sequelize('sqlite://./db.sqlite', {
       define: {
         timestamps: true
       },

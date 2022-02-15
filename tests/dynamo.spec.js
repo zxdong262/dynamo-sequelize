@@ -103,6 +103,7 @@ describe(pack.name, function () {
     expect(a1.privateChatOnly).toEqual(true)
     expect(a1.data.a).toEqual(0)
     expect(a1.data.b.length).toEqual(0)
+    expect(a1.ac()).toEqual('ac')
     const { id } = a1
     const after = await inst.findAll()
 
