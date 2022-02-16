@@ -34,6 +34,7 @@ describe(pack.name, function () {
       'sqlite://./db.sqlite',
       {
         define: {
+          saveUnknown: true,
           timestamps: true
         },
         logging: false,

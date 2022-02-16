@@ -90,7 +90,7 @@ export default class Dynamo {
   define (name: string, seqSchema: Options) {
     const conf = seqSchemaToDynamoSchema(seqSchema)
     const sc = new Schema(conf, {
-      saveUnknown: true,
+      saveUnknown: get(this.options, 'define.saveUnknown') || false,
       timestamps: get(this.options, 'define.timestamps')
     })
     const model = dynamoose.model(

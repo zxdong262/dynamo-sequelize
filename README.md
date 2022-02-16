@@ -18,6 +18,7 @@ const sequelize = new SequelizeDynamo(
   'sqlite://./db.sqlite',
   {
     define: {
+      saveUnknown: false,
       timestamps: true
     },
     logging: false,
