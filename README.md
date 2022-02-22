@@ -102,6 +102,7 @@ check more from [tests/dynamo.spec.js](tests/dynamo.spec.js)
 
 ## Supported features && limitations
 
+-
 - Enable dynamodb only when `dialect === 'dynamo'`
 - Only support Model deinfe by `inst.define`
 - Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`, `destroy`, `batchGet`, `getOne`.
@@ -137,6 +138,47 @@ function typeMapper(type) {
 ## User tip about performance
 
 - Model methods: `find`, `findAll`, `getOne` use dynamodb scan, so be careful, in big dataset, this may cost unacceptable time.
+
+## Upgrade guide
+
+- model created by sequelize.define can not be extended (since v2.x)
+
+```js
+
+// do this
+const User = sequelize.define('User', {
+  id: {
+    type: Sequelize.STRING,
+    primaryKey: true,
+    defaultValue: generate
+  },
+  name: {
+    type: Sequelize.STRING
+  }
+})
+
+User.prototype.act = () => 'act'
+export default User
+
+// DO NOT do this
+const User = sequelize.define('User', {
+  id: {
+    type: Sequelize.STRING,
+    primaryKey: true,
+    defaultValue: generate
+  },
+  name: {
+    type: Sequelize.STRING
+  }
+})
+
+class SubUser extends User
+
+SubUser.prototype.act = () => 'act'
+
+export default SubUser
+
+```
 
 ## Why/when to use it
 
