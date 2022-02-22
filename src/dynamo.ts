@@ -1,6 +1,6 @@
 import DynamoModel from './model'
 import dynamoose, { Schema } from 'dynamoose'
-import _ from 'lodash'
+import get from 'lodash.get'
 import { Options } from './types'
 
 const config: Options = {
@@ -91,8 +91,8 @@ export default class Dynamo {
   define (name: string, seqSchema: Options) {
     const { config, jsonTypes } = seqSchemaToDynamoSchema(seqSchema)
     const sc = new Schema(config, {
-      saveUnknown: _.get(this.options, 'define.saveUnknown') || true,
-      timestamps: _.get(this.options, 'define.timestamps')
+      saveUnknown: get(this.options, 'define.saveUnknown') || true,
+      timestamps: get(this.options, 'define.timestamps')
     })
     const model = dynamoose.model(
       name,
