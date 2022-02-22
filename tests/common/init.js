@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk')
-const dynamoose = require('dynamoose')
+// const dynamoose = require('dynamoose')
 
 const {
   AWS_PROFILE
@@ -12,4 +12,4 @@ if (AWS_PROFILE) {
   AWS.config.credentials = credentials
 }
 
-dynamoose.aws.ddb.local()
+// dynamoose.aws.ddb.local()

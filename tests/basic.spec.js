@@ -10,19 +10,24 @@ const dynamoose = require('dynamoose')
 const { Sequelize: SequelizeOrig } = require('sequelize')
 const DynamoDbLocal = require('dynamodb-local')
 
-const dynamoLocalPort = 8000
+const dynamoLocalPort = process.env.DYNAMODB_LOCALPORT || 8000
 let handle
 
-jest.setTimeout(99999)
+jest.setTimeout(20000)
 
 beforeEach(async () => {
   // do your tests
-  handle = await DynamoDbLocal.launch(dynamoLocalPort, null, [], false, true)
-  dynamoose.aws.ddb.local()
+  if (process.env.DYNAMODB_LOCALHOST) {
+    console.log('start local dynamo')
+    handle = await DynamoDbLocal.launch(dynamoLocalPort, null, [], false, true)
+    dynamoose.aws.ddb.local(process.env.DYNAMODB_LOCALHOST)
+  }
 })
 
 afterEach(async () => {
-  await DynamoDbLocal.stopChild(handle)
+  if (process.env.DYNAMODB_LOCALHOST) {
+    await DynamoDbLocal.stopChild(handle)
+  }
 })
 
 describe(pack.name, function () {

@@ -13,25 +13,29 @@ function generate () {
   return nanoid(7)
 }
 
-const dynamoLocalPort = 8000
+const dynamoLocalPort = process.env.DYNAMODB_LOCALPORT || 8000
 let handle
 
-jest.setTimeout(99999)
+jest.setTimeout(50000)
 
 beforeEach(async () => {
   // do your tests
-  handle = await DynamoDbLocal.launch(dynamoLocalPort, null, [], false, true)
-  dynamoose.aws.ddb.local()
+  if (process.env.DYNAMODB_LOCALHOST) {
+    handle = await DynamoDbLocal.launch(dynamoLocalPort, null, [], false, true)
+    dynamoose.aws.ddb.local(process.env.DYNAMODB_LOCALHOST)
+  }
 })
 
 afterEach(async () => {
-  await DynamoDbLocal.stopChild(handle)
+  if (process.env.DYNAMODB_LOCALHOST) {
+    await DynamoDbLocal.stopChild(handle)
+  }
 })
 
 describe(pack.name, function () {
   test('model', async () => {
     const sequelize = new SequelizeDynamo(
-      'sqlite://./db.sqlite',
+      'sss',
       {
         define: {
           saveUnknown: true,
@@ -41,7 +45,7 @@ describe(pack.name, function () {
         dialect: 'dynamo'
       }
     )
-    const inst = sequelize.define('DRAKE_TEMP_TEST' + new Date().getTime(), {
+    const inst = sequelize.define('DRAKE_TEMP_TEST', {
       id: { // Glip user ID
         type: Sequelize.STRING,
         primaryKey: true,
@@ -71,6 +75,9 @@ describe(pack.name, function () {
       data: { // all other data associcated with this user
         type: Sequelize.JSON
       },
+      arr: { // all other data associcated with this user
+        type: Sequelize.JSON
+      },
       date: {
         type: Sequelize.DATE
       }
@@ -85,6 +92,7 @@ describe(pack.name, function () {
     const a0 = await inst.create({
       name: 'n1dddd',
       date: date1,
+      arr: ['dd', 'yy'],
       data: {
         a: 0,
         b: []
@@ -101,6 +109,7 @@ describe(pack.name, function () {
     expect(new Date(a1.date)).toEqual(date1)
     expect(a1.enabled).toEqual(true)
     expect(a1.signed).toEqual(true)
+    expect(a0.arr[0]).toEqual('dd')
     expect(a1.privateChatOnly).toEqual(true)
     expect(a1.data.a).toEqual(0)
     expect(a1.data.b.length).toEqual(0)

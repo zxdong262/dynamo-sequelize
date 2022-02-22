@@ -1,8 +1,9 @@
 /* eslint no-useless-constructor: 0 */
 
 import { Options, Result } from './types'
+import _ from 'lodash'
 
-export default function model (Model: any, options: Options): any {
+export default function model (Model: any, jsonTypes: Options): any {
   class DynamoModel extends Model {
     constructor (inst: any) {
       super(inst)
@@ -12,13 +13,36 @@ export default function model (Model: any, options: Options): any {
 
     }
 
+    static jsonTypes = jsonTypes
+
+    static parser (obj: Options) {
+      const keys = Object.keys(DynamoModel.jsonTypes)
+      for (const k of keys) {
+        if (typeof obj[k] !== 'undefined') {
+          obj[k] = JSON.stringify(obj[k])
+        }
+      }
+      return obj
+    }
+
+    static jsonFy (obj: Options) {
+      const keys = Object.keys(DynamoModel.jsonTypes)
+      for (const k of keys) {
+        if (typeof obj[k] !== 'undefined') {
+          obj[k] = JSON.parse(obj[k])
+        }
+      }
+      return obj
+    }
+
     static async create (inst: DynamoModel) {
       if (!inst) {
         throw new Error('create requires instance object')
       }
-      const ist = new this(inst)
+      const obj = DynamoModel.parser(inst)
+      const ist = new this(obj)
       const r = await ist.save()
-      return new this(r)
+      return DynamoModel.jsonFy(new this(r))
     }
 
     static async findAll (q: Options | undefined) {
@@ -40,7 +64,7 @@ export default function model (Model: any, options: Options): any {
         }
         await scan.exec()
           .then((r: Result<any>) => {
-            result.push.apply(result, r.map(x => new this(x)))
+            result.push.apply(result, r.map(x => DynamoModel.jsonFy(new this(x))))
             result.queryCount++
             if (limit && result.length >= limit) {
               ok = true
@@ -81,7 +105,7 @@ export default function model (Model: any, options: Options): any {
         }
         await scan.exec()
           .then((r: Result<any>) => {
-            result.push.apply(result, r.map(x => new this(x)))
+            result.push.apply(result, r.map(x => DynamoModel.jsonFy(new this(x))))
             result.queryCount++
             if (limit && result.length >= limit) {
               result.lastKey = undefined
@@ -105,21 +129,17 @@ export default function model (Model: any, options: Options): any {
           if (err) {
             reject(err)
           } else {
-            resolve(result ? new this(result) : result)
+            resolve(result ? DynamoModel.jsonFy(new this(result)) : result)
           }
         })
       })
     }
 
     static async findByPk (id: string | number) {
-      return await new Promise((resolve, reject) => {
-        DynamoModel.Model.get({ id }, (err: Error, result: Options) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result ? new this(result) : result)
-          }
-        })
+      return DynamoModel.findOne({
+        where: {
+          id
+        }
       })
     }
 
@@ -129,7 +149,7 @@ export default function model (Model: any, options: Options): any {
           if (err) {
             reject(err)
           } else {
-            resolve(results.map(x => new this(x)))
+            resolve(results.map(x => DynamoModel.jsonFy(new this(x))))
           }
         })
       })
@@ -137,7 +157,7 @@ export default function model (Model: any, options: Options): any {
 
     static async update (update: Options, query: Options) {
       return await new Promise((resolve, reject) => {
-        DynamoModel.Model.update(query.where, update, (err: Error, result: any) => {
+        DynamoModel.Model.update(query.where, DynamoModel.parser(update), (err: Error, result: any) => {
           if (err) {
             reject(err)
           } else {

@@ -1,6 +1,6 @@
 import DynamoModel from './model'
 import dynamoose, { Schema } from 'dynamoose'
-import get from 'lodash.get'
+import _ from 'lodash'
 import { Options } from './types'
 
 const config: Options = {
@@ -21,18 +21,13 @@ if (process.env.DYNAMODB_WRITE !== undefined) {
 }
 dynamoose.model.defaults.set(config)
 
-if (process.env.DYNAMODB_LOCALHOST !== undefined) {
-  dynamoose.aws.ddb.local(process.env.DYNAMODB_LOCALHOST)
-}
-
 function typeMapper (type: string, key: string): any {
   const stringType = type.toString()
   switch (stringType) {
     case 'STRING':
     case 'TEXT':
-      return String
     case 'JSONTYPE':
-      return Object
+      return String
     case 'BOOLEAN':
       return Boolean
     case 'INTEGER':
@@ -52,7 +47,8 @@ export function seqSchemaToDynamoSchema (seqSchema: Options): Options {
   const keys = Object.keys(seqSchema)
   return keys.reduce((prev: Options, k) => {
     const v: Options = seqSchema[k]
-    const type = typeMapper(v.type, k)
+    const originalType = v.type.toString()
+    const type = typeMapper(originalType, k)
     const def: Options = {
       type
     }
@@ -63,6 +59,8 @@ export function seqSchemaToDynamoSchema (seqSchema: Options): Options {
       def.set = function (v: any): Number {
         return new Date(v).getTime()
       }
+    } else if (originalType === 'JSONTYPE') {
+      prev.jsonTypes[k] = 1
     }
     if (v.primaryKey) {
       v.hashKey = true
@@ -73,9 +71,12 @@ export function seqSchemaToDynamoSchema (seqSchema: Options): Options {
     if (v.defaultValue !== undefined) {
       def.default = v.defaultValue
     }
-    prev[k] = def
+    prev.config[k] = def
     return prev
-  }, {})
+  }, {
+    config: {},
+    jsonTypes: {}
+  })
 }
 
 export default class Dynamo {
@@ -88,16 +89,16 @@ export default class Dynamo {
   }
 
   define (name: string, seqSchema: Options) {
-    const conf = seqSchemaToDynamoSchema(seqSchema)
-    const sc = new Schema(conf, {
-      saveUnknown: get(this.options, 'define.saveUnknown') || true,
-      timestamps: get(this.options, 'define.timestamps')
+    const { config, jsonTypes } = seqSchemaToDynamoSchema(seqSchema)
+    const sc = new Schema(config, {
+      saveUnknown: _.get(this.options, 'define.saveUnknown') || true,
+      timestamps: _.get(this.options, 'define.timestamps')
     })
     const model = dynamoose.model(
       name,
       sc
     )
-    return DynamoModel(model, this.options)
+    return DynamoModel(model, jsonTypes)
   }
 
   authenticate () {}

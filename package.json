@@ -1,6 +1,6 @@
 {
   "name": "dynamo-sequelize",
-  "version": "1.0.8",
+  "version": "2.0.0",
   "description": "A sequelize wrapper to support Sequelize 6+ and Dynamodb",
   "main": "dist/index.js",
   "scripts": {
@@ -32,12 +32,12 @@
   "dependencies": {
     "sequelize": "^6.16.1",
     "dynamoose": "^2.8.5",
-    "lodash.get": "^4.4.2"
+    "lodash": "*"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
     "@types/jest": "^27.4.0",
-    "@types/lodash.get": "^4.4.6",
+    "@types/lodash": "^4.14.178",
     "coveralls": "^3.1.1",
     "dotenv": "^10.0.0",
     "dotenv-override-true": "^6.2.2",
