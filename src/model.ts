@@ -179,6 +179,10 @@ export default function model (Model: any, jsonTypes: Options): any {
       })
     }
 
+    destroy () {
+      return this.delete()
+    }
+
     toJSON () {
       return Object.keys(this).filter(k => {
         return typeof this[k] !== 'function' &&

@@ -45,7 +45,7 @@ describe(pack.name, function () {
         dialect: 'dynamo'
       }
     )
-    const inst = sequelize.define('DRAKE_TEMP_TEST', {
+    const User = sequelize.define('DRAKE_TEMP_TEST' + Date.now(), {
       id: { // Glip user ID
         type: Sequelize.STRING,
         primaryKey: true,
@@ -82,14 +82,14 @@ describe(pack.name, function () {
         type: Sequelize.DATE
       }
     })
-    inst.prototype.ac = function () {
+    User.prototype.ac = function () {
       return 'ac'
     }
-    const before = await inst.findAll()
+    const before = await User.findAll()
     expect(before.queryCount).toEqual(1)
     // create
     const date1 = new Date()
-    const a0 = await inst.create({
+    const a0 = await User.create({
       name: 'n1dddd',
       date: date1,
       arr: ['dd', 'yy'],
@@ -98,7 +98,7 @@ describe(pack.name, function () {
         b: []
       }
     })
-    const a1 = await inst.create({
+    const a1 = await User.create({
       name: 'n1',
       date: date1,
       data: {
@@ -115,13 +115,13 @@ describe(pack.name, function () {
     expect(a1.data.b.length).toEqual(0)
     expect(a1.ac()).toEqual('ac')
     const { id } = a1
-    const after = await inst.findAll()
+    const after = await User.findAll()
 
     // findAll
     expect(after.length).toEqual(before.length + 2)
 
     // find with limit
-    const after2 = await inst.find({
+    const after2 = await User.find({
       op: 'contains',
       where: {
         name: 'n'
@@ -131,7 +131,7 @@ describe(pack.name, function () {
     expect(after2.queryCount).toEqual(1)
 
     // batchGet
-    const after3 = await inst.batchGet([
+    const after3 = await User.batchGet([
       {
         id: a0.id
       },
@@ -142,7 +142,7 @@ describe(pack.name, function () {
     expect(after3.length).toEqual(before.length + 2)
 
     // getOne
-    const get1 = await inst.getOne({
+    const get1 = await User.getOne({
       where: {
         name: 'n1dddd'
       }
@@ -151,13 +151,13 @@ describe(pack.name, function () {
     expect(get1[0].id).toEqual(a0.id)
     expect(get1.queryCount >= 1).toEqual(true)
     // findByPk
-    const one = await inst.findByPk(id)
+    const one = await User.findByPk(id)
     expect(one.id).toEqual(a1.id)
     expect(one.enabled).toEqual(true)
     expect(one.ac()).toEqual('ac')
 
     // update
-    await inst.update({
+    await User.update({
       enabled: false
     }, {
       where: {
@@ -165,16 +165,16 @@ describe(pack.name, function () {
       }
     })
 
-    const a2 = await inst.findByPk(id)
+    const a2 = await User.findByPk(id)
     expect(a2.enabled).toEqual(false)
     expect(a2.date).toEqual(date1)
 
     // find
-    await inst.create({
+    await User.create({
       id: 'xxx',
       name: 'n1'
     })
-    const fl = await inst.find({
+    const fl = await User.find({
       where: {
         id: 'xxx',
         enabled: true
@@ -183,12 +183,12 @@ describe(pack.name, function () {
     expect(fl.length).toEqual(1)
     expect(fl[0].id).toEqual('xxx')
     expect(fl[0].ac()).toEqual('ac')
-    await inst.findAll()
+    await User.findAll()
     expect(fl[0].ac()).toEqual('ac')
     expect(typeof JSON.stringify(fl)).toEqual('string')
 
     // findOne
-    const oo = await inst.findOne({
+    const oo = await User.findOne({
       where: {
         id
       }
@@ -197,7 +197,7 @@ describe(pack.name, function () {
     expect(oo.ac()).toEqual('ac')
 
     // find with sencondary index
-    const all = await inst.find({
+    const all = await User.find({
       where: {
         name: 'n1'
       }
@@ -205,7 +205,7 @@ describe(pack.name, function () {
     expect(all.length).toEqual(2)
 
     // contains query
-    const all2 = await inst.find({
+    const all2 = await User.find({
       op: 'contains',
       where: {
         name: 'n'
@@ -214,15 +214,24 @@ describe(pack.name, function () {
     expect(all2.length).toEqual(3)
 
     // destroy
-    const d1 = await inst.destroy({
+    const d1 = await User.destroy({
       where: {
         id
       }
     })
     expect(d1).toEqual(1)
 
+    // document.destroy
+    const todelId = 'todel'
+    const rodo = await User.create({
+      id: todelId
+    })
+    await rodo.destroy()
+    const todel1 = await User.findByPk(todelId)
+    expect(!!todel1).toEqual(false)
+
     // no result
-    const oox = await inst.findOne({
+    const oox = await User.findOne({
       where: {
         id: 'sdfs'
       }
@@ -230,16 +239,16 @@ describe(pack.name, function () {
     expect(oox).toEqual(undefined)
 
     for (let iii = 0; iii < 10; iii++) {
-      await inst.create({
+      await User.create({
         id: iii + 'id',
         name: iii + 'name'
       })
     }
     // lastKey support in findAll
-    const all1 = await inst.findAll({ limit: 1 })
+    const all1 = await User.findAll({ limit: 1 })
     expect(all1.length >= 1).toEqual(true)
     expect(all1.queryCount).toEqual(1)
-    const alll2 = await inst.findAll({ limit: 1, lastKey: all1.lastKey })
+    const alll2 = await User.findAll({ limit: 1, lastKey: all1.lastKey })
     expect(alll2.queryCount).toEqual(1)
   })
 })

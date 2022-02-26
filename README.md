@@ -25,7 +25,7 @@ const sequelize = new SequelizeDynamo(
     dialect: 'dynamo'
   }
 )
-let inst = sequelize.define('User', {
+const User = sequelize.define('User', {
   id: {
     type: Sequelize.STRING,
     primaryKey: true,
@@ -44,51 +44,51 @@ let inst = sequelize.define('User', {
     type: Sequelize.DATE
   }
 })
-inst.prototype.ac = function() {
+User.prototype.ac = function() {
   return 'ac'
 }
-let before = await inst.findAll()
+let before = await User.findAll()
 ```
 
 ## Class methods
 
 ```js
-inst.find({
+User.find({
   limit: 1, // optional
   op: 'eq', //optional, could be 'contains'
   where: {
     name: 'x'
   }
 })
-inst.findAll()
-inst.getOne({
+User.findAll()
+User.getOne({
   where: {
     name: 'xxx'
   }
 })
-inst.findOne({
+User.findOne({
   where: {
     id: 'xxx'
   }
 })
-inst.findByPk('xxx')
-inst.create({
+User.findByPk('xxx')
+User.create({
   id: 'xxx'
   name: 'yyyy'
 })
-inst.update({
+User.update({
   name: 'gggg'
 }, {
   where: {
     id: 'xxx'
   }
 })
-inst.destroy({
+User.destroy({
   where: {
     id: 'xxx'
   }
 })
-inst.batchGet([
+User.batchGet([
   {
     id: 'xxx'
   },
@@ -98,14 +98,21 @@ inst.batchGet([
 ])
 ```
 
+## Instance methods
+
+```js
+const user = User.create({id : 'xx'})
+await user.destroy()
+```
+
 check more from [tests/dynamo.spec.js](tests/dynamo.spec.js)
 
 ## Supported features && limitations
 
--
 - Enable dynamodb only when `dialect === 'dynamo'`
-- Only support Model deinfe by `inst.define`
+- Only support Model deinfe by `User.define`
 - Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`, `destroy`, `batchGet`, `getOne`.
+- Only support instance/document methods: `destroy`.
 - `find`, `findOne`, `getOne`, `findAll`, `update` and `destroy` only support `where` query.
 - All `where` query keys must have non empty value.
 - Set envs through .env file, check [.env.sample](.env.sample) for detail.

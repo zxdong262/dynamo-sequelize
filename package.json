@@ -1,6 +1,6 @@
 {
   "name": "dynamo-sequelize",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A sequelize wrapper to support Sequelize 6+ and Dynamodb",
   "main": "dist/index.js",
   "scripts": {
