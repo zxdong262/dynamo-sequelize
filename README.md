@@ -98,6 +98,25 @@ User.batchGet([
 ])
 ```
 
+## JSON type with Object
+
+By default, it will save JSON object as String in dynamodb. To save JSON object as Object in dynamodb:
+
+```js
+const sequelize = new SequelizeDynamo(
+  '...',
+  {
+    define: {
+      saveUnknown: true,
+      timestamps: true,
+      jsonAsObject: true,
+    },
+    logging: false,
+    dialect: 'dynamo'
+  }
+)
+```
+
 ## Instance methods
 
 ```js

@@ -195,6 +195,26 @@ export default function model (Model: any, jsonTypes: Options): any {
         }
       }, {})
     }
+
+    async save(...args: []) {
+      const jsonAsStringKeys = Object.keys(DynamoModel.jsonTypes);
+      if (jsonAsStringKeys.length === 0) {
+        return super.save(...args);
+      }
+      let shouldJSONStringify = false;
+      for (const key of jsonAsStringKeys) {
+        if (typeof this[key] === 'object') {
+          shouldJSONStringify = true;
+          break;
+        }
+      }
+      if (!shouldJSONStringify) {
+        return super.save(...args);
+      }
+      DynamoModel.parser(this);
+      await super.save(...args);
+      DynamoModel.jsonFy(this);
+    }
   }
   DynamoModel.Model = Model
   return DynamoModel

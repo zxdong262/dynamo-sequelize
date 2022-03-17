@@ -250,5 +250,47 @@ describe(pack.name, function () {
     expect(all1.queryCount).toEqual(1)
     const alll2 = await User.findAll({ limit: 1, lastKey: all1.lastKey })
     expect(alll2.queryCount).toEqual(1)
+
+    const sequelize1 = new SequelizeDynamo(
+      'sss',
+      {
+        define: {
+          saveUnknown: true,
+          timestamps: true,
+          jsonAsObject: true
+        },
+        logging: false,
+        dialect: 'dynamo'
+      }
+    )
+    const UserData = sequelize1.define('DRAKE_TEMP_TEST2' + Date.now(), {
+      id: { // Glip user ID
+        type: Sequelize.STRING,
+        primaryKey: true,
+        defaultValue: generate
+      },
+      name: { // glip user name
+        type: Sequelize.STRING
+      },
+      data: { // user token
+        type: Sequelize.JSON
+      }
+    })
+    const user0 = await UserData.create({
+      name: 'n1dddd',
+      data: [{ a: 0 }]
+    })
+    const dataId = user0.id
+    expect(user0.data[0].a).toEqual(0)
+    user0.name = 'new save'
+    await user0.save()
+    const user1 = await UserData.findByPk(dataId)
+    expect(user1.name).toEqual('new save')
+    expect(user1.data[0].a).toEqual(0)
+    user1.data = [{ a: 1 }]
+    await user1.save()
+    expect(user1.data[0].a).toEqual(1)
+    const user2 = await UserData.findByPk(dataId)
+    expect(user2.data[0].a).toEqual(1)
   })
 })
