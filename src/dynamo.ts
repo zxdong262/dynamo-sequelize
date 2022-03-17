@@ -20,7 +20,9 @@ if (process.env.DYNAMODB_WRITE !== undefined) {
   config.throughput.write = process.env.DYNAMODB_WRITE
 }
 dynamoose.model.defaults.set(config)
-
+if (process.env.DYNAMODB_LOCALHOST) {
+    dynamoose.aws.ddb.local(process.env.DYNAMODB_LOCALHOST);
+}
 function typeMapper (type: string, key: string): any {
   const stringType = type.toString()
   switch (stringType) {
