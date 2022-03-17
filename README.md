@@ -19,7 +19,8 @@ const sequelize = new SequelizeDynamo(
   {
     define: {
       saveUnknown: false,
-      timestamps: true
+      timestamps: true,
+      jsonAsObject: true // set false only if you upgrade from old db to be compatible with old db
     },
     logging: false,
     dialect: 'dynamo'
@@ -122,6 +123,8 @@ const sequelize = new SequelizeDynamo(
 ```js
 const user = User.create({id : 'xx'})
 await user.destroy()
+user.name = 'yyy'
+await user.save()
 ```
 
 check more from [tests/dynamo.spec.js](tests/dynamo.spec.js)
@@ -131,7 +134,7 @@ check more from [tests/dynamo.spec.js](tests/dynamo.spec.js)
 - Enable dynamodb only when `dialect === 'dynamo'`
 - Only support Model deinfe by `User.define`
 - Only support Model methods: `find`, `findAll`, `findOne`, `create`, `findByPk`, `update`, `destroy`, `batchGet`, `getOne`.
-- Only support instance/document methods: `destroy`.
+- Only support instance/document methods: `destroy`, `save`.
 - `find`, `findOne`, `getOne`, `findAll`, `update` and `destroy` only support `where` query.
 - All `where` query keys must have non empty value.
 - Set envs through .env file, check [.env.sample](.env.sample) for detail.
@@ -165,7 +168,7 @@ function typeMapper(type) {
 
 - Model methods: `find`, `findAll`, `getOne` use dynamodb scan, so be careful, in big dataset, this may cost unacceptable time.
 
-## Upgrade guide
+## Use guide
 
 - model created by sequelize.define can not be extended (since v2.x)
 
