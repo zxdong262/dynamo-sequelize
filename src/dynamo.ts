@@ -23,13 +23,18 @@ dynamoose.model.defaults.set(config)
 if (process.env.DYNAMODB_LOCALHOST) {
     dynamoose.aws.ddb.local(process.env.DYNAMODB_LOCALHOST);
 }
-function typeMapper (type: string, key: string): any {
+function typeMapper (type: string, key: string, jsonAsObject: boolean): any {
   const stringType = type.toString()
   switch (stringType) {
     case 'STRING':
     case 'TEXT':
-    case 'JSONTYPE':
       return String
+    case 'JSONTYPE': {
+      if (jsonAsObject) {
+        return [Object, Array]
+      }
+      return String
+    }
     case 'BOOLEAN':
       return Boolean
     case 'INTEGER':
@@ -45,12 +50,12 @@ function typeMapper (type: string, key: string): any {
   }
 }
 
-export function seqSchemaToDynamoSchema (seqSchema: Options): Options {
+export function seqSchemaToDynamoSchema (seqSchema: Options, jsonAsObject: boolean): Options {
   const keys = Object.keys(seqSchema)
   return keys.reduce((prev: Options, k) => {
     const v: Options = seqSchema[k]
     const originalType = v.type.toString()
-    const type = typeMapper(originalType, k)
+    const type = typeMapper(originalType, k, jsonAsObject)
     const def: Options = {
       type
     }
@@ -61,7 +66,7 @@ export function seqSchemaToDynamoSchema (seqSchema: Options): Options {
       def.set = function (v: any): Number {
         return new Date(v).getTime()
       }
-    } else if (originalType === 'JSONTYPE') {
+    } else if (!jsonAsObject && originalType === 'JSONTYPE') {
       prev.jsonTypes[k] = 1
     }
     if (v.primaryKey) {
@@ -91,7 +96,8 @@ export default class Dynamo {
   }
 
   define (name: string, seqSchema: Options) {
-    const { config, jsonTypes } = seqSchemaToDynamoSchema(seqSchema)
+    const jsonAsObject = get(this.options, 'define.jsonAsObject') || false;
+    const { config, jsonTypes } = seqSchemaToDynamoSchema(seqSchema, jsonAsObject)
     const sc = new Schema(config, {
       saveUnknown: get(this.options, 'define.saveUnknown') || true,
       timestamps: get(this.options, 'define.timestamps')
