@@ -292,5 +292,22 @@ describe(pack.name, function () {
     expect(user1.data[0].a).toEqual(1)
     const user2 = await UserData.findByPk(dataId)
     expect(user2.data[0].a).toEqual(1)
+    const user3 = await UserData.create({
+      name: 'n1dddd3',
+      data: [{ a: 3 }]
+    })
+    const user4 = await UserData.create({
+      name: 'n1dddd4',
+      data: [{ a: 4 }]
+    })
+    await UserData.destroy({
+      where: {
+        id: [user3.id, user4.id]
+      }
+    })
+    const user5 = await UserData.findByPk(user3.id)
+    expect(user5).toEqual(undefined)
+    const user6 = await UserData.findByPk(user4.id)
+    expect(user6).toEqual(undefined)
   })
 })

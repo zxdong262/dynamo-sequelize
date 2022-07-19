@@ -89,6 +89,11 @@ User.destroy({
     id: 'xxx'
   }
 })
+User.destroy({
+  where: {
+    id: ['xxx', 'yyy'],
+  }
+})
 User.batchGet([
   {
     id: 'xxx'

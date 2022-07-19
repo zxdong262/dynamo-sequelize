@@ -169,6 +169,16 @@ export default function model (Model: any, jsonTypes: Options): any {
 
     static async destroy (query: Options) {
       return await new Promise((resolve, reject) => {
+        if (Array.isArray(query.where.id)) {
+          DynamoModel.Model.batchDelete(query.where.id, (err: Error, result: any) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(result)
+            }
+          })
+          return
+        }
         DynamoModel.Model.delete(query.where, (err: Error, result: any) => {
           if (err) {
             reject(err)
